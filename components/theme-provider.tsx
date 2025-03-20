@@ -8,9 +8,10 @@ type Theme = "dark" | "light" | "system"
 
 type ThemeProviderProps = {
   children: React.ReactNode
+  attribute?: string
   defaultTheme?: Theme
-  storageKey?: string
   enableSystem?: boolean
+  storageKey?: string
   disableTransitionOnChange?: boolean
 }
 
@@ -30,6 +31,7 @@ export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "theme",
+  attribute = "data-theme",
   enableSystem = true,
   disableTransitionOnChange = false,
   ...props
@@ -38,16 +40,23 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement
-    root.classList.remove("light", "dark")
 
+    // Remove previous theme attribute
+    const dataTheme = root.getAttribute(attribute)
+    if (dataTheme) {
+      root.removeAttribute(attribute)
+    }
+
+    // Handle system preference
     if (theme === "system" && enableSystem) {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-      root.classList.add(systemTheme)
+      root.setAttribute(attribute, systemTheme)
       return
     }
 
-    root.classList.add(theme)
-  }, [theme, enableSystem])
+    // Set theme attribute
+    root.setAttribute(attribute, theme)
+  }, [theme, attribute, enableSystem])
 
   const value = {
     theme,
