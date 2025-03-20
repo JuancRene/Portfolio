@@ -1,3 +1,4 @@
+import type React from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Github, ExternalLink, Bot, Globe, Database, Calendar } from "lucide-react"
@@ -29,6 +30,7 @@ export default function ProjectsPage() {
                 image="/images/gestor-sistema.png"
                 tags={["TypeScript", "Next.js", "MySQL", "Supabase", "Tailwind CSS"]}
                 githubLink="https://github.com/JuancRene/GestorDePedido"
+                liveLink="https://gestor-de-pedido-lapecosa.vercel.app"
                 icon={<Database size={24} />}
                 year="2024"
               />
@@ -120,7 +122,25 @@ export default function ProjectsPage() {
   )
 }
 
-function ProjectCard({ title, description, image, tags, githubLink, liveLink, icon, year }) {
+function ProjectCard({
+  title,
+  description,
+  image,
+  tags,
+  githubLink,
+  liveLink,
+  icon,
+  year,
+}: {
+  title: string
+  description: string
+  image: string
+  tags: string[]
+  githubLink: string
+  liveLink?: string
+  icon: React.ReactNode
+  year: string
+}) {
   return (
     <div className="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-800 hover:border-emerald-500/50 transition-all group">
       <div className="relative h-48 overflow-hidden">
