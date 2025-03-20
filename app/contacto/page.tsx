@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+import Navbar from "../../components/navbar"
+import Footer from "../../components/footer"
 import { Github, Linkedin, MessageSquare, Mail, MapPin, Phone, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { sendContactForm } from "@/lib/actions"
-import { useToast } from "@/hooks/use-toast"
+import { Button } from "../../components/ui/button"
+import { sendContactForm } from "../../lib/actions"
+import { useToast } from "../../hooks/use-toast"
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)

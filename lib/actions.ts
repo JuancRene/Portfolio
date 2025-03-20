@@ -38,15 +38,6 @@ export async function sendContactForm(formData: FormData) {
     // En un entorno real, aquí enviarías el email usando un servicio como Nodemailer, SendGrid, etc.
     // Por ahora, simulamos un envío exitoso
 
-    // Ejemplo de cómo se implementaría con un servicio de email:
-    /*
-    await sendEmail({
-      to: "juancruzrenearenas@gmail.com",
-      subject: `Contacto Portfolio: ${subject}`,
-      text: `Nombre: ${name}\nEmail: ${email}\nMensaje: ${message}`,
-    })
-    */
-
     // Simulamos un pequeño retraso para mostrar el estado de carga
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
