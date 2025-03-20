@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import Link from "next/link"
 import { Github, Linkedin, MessageSquare, Loader2 } from "lucide-react"
@@ -170,7 +172,15 @@ export default function ContactSection() {
   )
 }
 
-function SocialLink({ icon, label, href }) {
+function SocialLink({
+  icon,
+  label,
+  href,
+}: {
+  icon: React.ReactNode
+  label: string
+  href: string
+}) {
   return (
     <Link
       href={href}
