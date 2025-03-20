@@ -1,3 +1,4 @@
+import type React from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Calendar, Code, Users, Bot, ChevronRight, Database, Github, ExternalLink } from "lucide-react"
@@ -197,7 +198,25 @@ export default function ExperiencePage() {
   )
 }
 
-function ExperienceCard({ title, period, role, icon, description, tasks, link, demoLink }) {
+function ExperienceCard({
+  title,
+  period,
+  role,
+  icon,
+  description,
+  tasks,
+  link,
+  demoLink,
+}: {
+  title: string
+  period: string
+  role: string
+  icon: React.ReactNode
+  description: string
+  tasks: string[]
+  link?: string
+  demoLink?: string
+}) {
   return (
     <div className="bg-gray-900/50 rounded-xl p-8 border border-gray-800 hover:border-emerald-500/50 transition-all">
       <div className="flex flex-col md:flex-row gap-6">
