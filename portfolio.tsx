@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -299,9 +301,9 @@ export default function Portfolio() {
               { name: "Node.js", level: 65 },
               { name: "Python", level: 80 },
               { name: "Java", level: 99 },
-              { name: "React", level: 80},
+              { name: "React", level: 80 },
               { name: "TypeScript", level: 70 },
-              { name: "Node.js", level: 55 }
+              { name: "Node.js", level: 55 },
             ].map((skill, index) => (
               <motion.div
                 key={skill.name}
@@ -459,7 +461,15 @@ export default function Portfolio() {
 }
 
 // Service Card Component
-function ServiceCard({ icon, title, description }) {
+function ServiceCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -478,7 +488,15 @@ function ServiceCard({ icon, title, description }) {
 }
 
 // Social Link Component
-function SocialLink({ icon, label, href }) {
+function SocialLink({
+  icon,
+  label,
+  href,
+}: {
+  icon: React.ReactNode
+  label: string
+  href: string
+}) {
   return (
     <Link
       href={href}
