@@ -1,71 +1,148 @@
 "use client"
 
 import * as React from "react"
-import { OTPInput, OTPInputContext } from "input-otp"
 import { Dot } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-const InputOTP = React.forwardRef<
-  React.ElementRef<typeof OTPInput>,
-  React.ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, containerClassName, ...props }, ref) => (
-  <OTPInput
-    ref={ref}
-    containerClassName={cn(
-      "flex items-center gap-2 has-[:disabled]:opacity-50",
-      containerClassName
-    )}
-    className={cn("disabled:cursor-not-allowed", className)}
-    {...props}
-  />
-))
-InputOTP.displayName = "InputOTP"
+// Creamos nuestro propio contexto para reemplazar OTPInputContext
+const OTPInputContext = React.createContext<{
+  value: string
+  setValue: React.Dispatch<React.SetStateAction<string>>
+  maxLength: number
+}>({
+  value: "",
+  setValue: () => {},
+  maxLength: 6,
+})
 
-const InputOTPGroup = React.forwardRef<
-  React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div">
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex items-center", className)} {...props} />
-))
-InputOTPGroup.displayName = "InputOTPGroup"
+// Componente principal
+export function OTPInput({
+  value,
+  onChange,
+  maxLength = 6,
+  children,
+  ...props
+}: {
+  value: string
+  onChange: (value: string) => void
+  maxLength?: number
+  children: React.ReactNode
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const [internalValue, setInternalValue] = React.useState(value || "")
 
-const InputOTPSlot = React.forwardRef<
-  React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div"> & { index: number }
->(({ index, className, ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext)
-  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
+  React.useEffect(() => {
+    if (value !== internalValue) {
+      setInternalValue(value)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
+  const handleValueChange = React.useCallback(
+    (newValue: string) => {
+      setInternalValue(newValue)
+      onChange(newValue)
+    },
+    [onChange],
+  )
 
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "relative flex h-10 w-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
-        isActive && "z-10 ring-2 ring-ring ring-offset-background",
-        className
-      )}
-      {...props}
+    <OTPInputContext.Provider
+      value={{
+        value: internalValue,
+        setValue: handleValueChange,
+        maxLength,
+      }}
     >
-      {char}
-      {hasFakeCaret && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
-        </div>
-      )}
+      <div {...props} className={cn("flex items-center gap-2", props.className)}>
+        {children}
+      </div>
+    </OTPInputContext.Provider>
+  )
+}
+
+// Componente para cada slot de entrada
+export function OTPInputGroup({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div {...props} className={cn("flex items-center gap-2", props.className)}>
+      {children}
     </div>
   )
-})
-InputOTPSlot.displayName = "InputOTPSlot"
+}
 
-const InputOTPSeparator = React.forwardRef<
-  React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div">
->(({ ...props }, ref) => (
-  <div ref={ref} role="separator" {...props}>
-    <Dot />
-  </div>
-))
-InputOTPSeparator.displayName = "InputOTPSeparator"
+// Componente para cada slot individual
+export function OTPInputSlot({
+  index,
+  ...props
+}: {
+  index: number
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  const { value, setValue, maxLength } = React.useContext(OTPInputContext)
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
-export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !value[index] && index > 0) {
+      const newValue = value.slice(0, index - 1) + value.slice(index)
+      setValue(newValue)
+      const prevInput = inputRef.current?.previousElementSibling as HTMLInputElement
+      prevInput?.focus()
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      const prevInput = inputRef.current?.previousElementSibling as HTMLInputElement
+      prevInput?.focus()
+    } else if (e.key === "ArrowRight" && index < maxLength - 1) {
+      const nextInput = inputRef.current?.nextElementSibling as HTMLInputElement
+      nextInput?.focus()
+    }
+  }
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement
+    let newChar = target.value.slice(-1)
+
+    // Solo permitir dígitos
+    if (!/^\d*$/.test(newChar)) {
+      newChar = ""
+    }
+
+    const newValue = value.slice(0, index) + newChar + value.slice(index + 1)
+    setValue(newValue)
+
+    if (newChar && index < maxLength - 1) {
+      const nextInput = inputRef.current?.nextElementSibling as HTMLInputElement
+      nextInput?.focus()
+    }
+  }
+
+  return (
+    <input
+      ref={inputRef}
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      autoComplete="one-time-code"
+      maxLength={1}
+      value={value[index] || ""}
+      onChange={handleInput}
+      onKeyDown={handleKeyDown}
+      className={cn(
+        "h-10 w-10 rounded-md border border-input bg-background text-center text-sm shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-ring",
+        props.className,
+      )}
+      {...props}
+    />
+  )
+}
+
+// Componente separador
+export function OTPInputSeparator({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      role="separator"
+      {...props}
+      className={cn("flex items-center justify-center text-muted-foreground", props.className)}
+    >
+      <Dot className="h-4 w-4" />
+    </div>
+  )
+}
+
