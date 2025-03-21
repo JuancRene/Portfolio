@@ -21,7 +21,6 @@ const nextConfig = {
     'sonner',
     'vaul',
     'cmdk',
-    'input-otp',
     'react-resizable-panels',
     '@radix-ui/react-accordion',
     '@radix-ui/react-alert-dialog',
