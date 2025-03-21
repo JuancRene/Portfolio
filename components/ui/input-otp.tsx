@@ -38,19 +38,23 @@ export function OTPInput({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  const handleValueChange = React.useCallback(
-    (newValue: string) => {
+  // Modificamos esta función para que sea compatible con React.Dispatch<React.SetStateAction<string>>
+  const setValue = React.useCallback(
+    (valueOrFn: React.SetStateAction<string>) => {
+      const newValue =
+        typeof valueOrFn === "function" ? (valueOrFn as (prevState: string) => string)(internalValue) : valueOrFn
+
       setInternalValue(newValue)
       onChange(newValue)
     },
-    [onChange],
+    [internalValue, onChange],
   )
 
   return (
     <OTPInputContext.Provider
       value={{
         value: internalValue,
-        setValue: handleValueChange,
+        setValue,
         maxLength,
       }}
     >

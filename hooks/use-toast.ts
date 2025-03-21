@@ -4,17 +4,17 @@ import { useState } from "react"
 
 type ToastVariant = "default" | "destructive"
 
-type Toast = {
-  title: string
+export type Toast = {
+  title?: string
   description?: string
   variant?: ToastVariant
 }
 
 export function useToast() {
-  const [toastState, setToast] = useState<Toast | null>(null)
+  const [toast, setToast] = useState<Toast | null>(null)
 
-  const showToast = (toast: Toast) => {
-    setToast(toast)
+  const showToast = (newToast: Toast) => {
+    setToast(newToast)
 
     // Auto-dismiss after 5 seconds
     setTimeout(() => {
@@ -27,7 +27,7 @@ export function useToast() {
   }
 
   return {
-    toast: toastState,
+    toast,
     dismissToast,
     showToast,
   }
