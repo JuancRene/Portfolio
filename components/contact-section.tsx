@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 export default function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({})
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true)
@@ -22,7 +22,7 @@ export default function ContactSection() {
       const result = await sendContactForm(formData)
 
       if (result.success) {
-        toast({
+        showToast({
           title: "Mensaje enviado",
           description: result.message,
           variant: "default",
@@ -32,7 +32,7 @@ export default function ContactSection() {
         form?.reset()
       } else {
         setFormErrors(result.errors || {})
-        toast({
+        showToast({
           title: "Error",
           description:
             result.message || "Hubo un error al enviar el mensaje. Por favor, revisa los campos e intenta nuevamente.",
@@ -40,7 +40,7 @@ export default function ContactSection() {
         })
       }
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: "Hubo un problema al procesar tu solicitud. Por favor, intenta nuevamente.",
         variant: "destructive",
