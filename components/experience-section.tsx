@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Calendar, Bot, ChevronRight, Database } from "lucide-react"
@@ -54,7 +56,19 @@ export default function ExperienceSection() {
   )
 }
 
-function ExperienceCard({ title, period, role, icon, description }) {
+function ExperienceCard({
+  title,
+  period,
+  role,
+  icon,
+  description,
+}: {
+  title: string
+  period: string
+  role: string
+  icon: React.ReactNode
+  description: string
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

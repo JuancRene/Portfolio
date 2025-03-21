@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import Navbar from "../../components/navbar"
 import Footer from "../../components/footer"
@@ -12,7 +14,7 @@ import { useToast } from "../../hooks/use-toast"
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({})
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true)
@@ -22,7 +24,7 @@ export default function ContactPage() {
       const result = await sendContactForm(formData)
 
       if (result.success) {
-        toast({
+        showToast({
           title: "Mensaje enviado",
           description: result.message,
           variant: "default",
@@ -32,7 +34,7 @@ export default function ContactPage() {
         form?.reset()
       } else {
         setFormErrors(result.errors || {})
-        toast({
+        showToast({
           title: "Error",
           description:
             result.message || "Hubo un error al enviar el mensaje. Por favor, revisa los campos e intenta nuevamente.",
@@ -40,7 +42,7 @@ export default function ContactPage() {
         })
       }
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: "Hubo un problema al procesar tu solicitud. Por favor, intenta nuevamente.",
         variant: "destructive",
@@ -71,7 +73,12 @@ export default function ContactPage() {
                 link="mailto:juancruzrenearenas@gmail.com"
               />
 
-              <ContactCard icon={<MapPin size={24} />} title="Ubicación" info="Paraná, Entre Ríos, Argentina" />
+              <ContactCard
+                icon={<MapPin size={24} />}
+                title="Ubicación"
+                info="Paraná, Entre Ríos, Argentina"
+                link="#"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -205,7 +212,17 @@ export default function ContactPage() {
   )
 }
 
-function ContactCard({ icon, title, info, link }) {
+function ContactCard({
+  icon,
+  title,
+  info,
+  link,
+}: {
+  icon: React.ReactNode
+  title: string
+  info: string
+  link?: string
+}) {
   const content = (
     <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-emerald-500/50 transition-all h-full flex flex-col items-center text-center">
       <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4">
@@ -223,7 +240,17 @@ function ContactCard({ icon, title, info, link }) {
   return content
 }
 
-function SocialLink({ icon, platform, username, link }) {
+function SocialLink({
+  icon,
+  platform,
+  username,
+  link,
+}: {
+  icon: React.ReactNode
+  platform: string
+  username: string
+  link: string
+}) {
   return (
     <Link
       href={link}

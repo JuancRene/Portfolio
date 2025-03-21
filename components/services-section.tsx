@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { motion } from "framer-motion"
 import { Code, Database, Layers, Globe, MessageSquare, Server } from "lucide-react"
 
@@ -56,7 +58,15 @@ export default function ServicesSection() {
   )
 }
 
-function ServiceCard({ icon, title, description }) {
+function ServiceCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

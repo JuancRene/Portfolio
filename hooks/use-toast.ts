@@ -11,7 +11,7 @@ type Toast = {
 }
 
 export function useToast() {
-  const [toast, setToast] = useState<Toast | null>(null)
+  const [toastState, setToast] = useState<Toast | null>(null)
 
   const showToast = (toast: Toast) => {
     setToast(toast)
@@ -27,9 +27,9 @@ export function useToast() {
   }
 
   return {
-    toast,
+    toast: toastState,
     dismissToast,
-    toast: showToast,
+    showToast,
   }
 }
 
